@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
+import { joinUrl } from "../config/paths";
 import { CreateOrderResult, Order, OrderItem } from "./orders.types";
 
-const INVENTORY_URL = process.env.INVENTORY_SERVICE_URL || "http://localhost:3002";
+const INVENTORY_SERVICE_URL = process.env.INVENTORY_SERVICE_URL || "http://localhost:3002/inventory";
 
 @Injectable()
 export class OrdersService {
@@ -35,7 +36,7 @@ export class OrdersService {
     let stockError: string | null = null;
 
     try {
-      const stockRes = await fetch(`${INVENTORY_URL}/api/reduce-stock`, {
+      const stockRes = await fetch(joinUrl(INVENTORY_SERVICE_URL, "/reduce-stock"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: stockItems }),

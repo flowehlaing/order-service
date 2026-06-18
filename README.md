@@ -9,6 +9,7 @@ internally to reduce product stock.
 
 ```bash
 npm install
+cp .env.example .env
 npm run build
 npm start
 ```
@@ -16,7 +17,7 @@ npm start
 The service listens on:
 
 ```text
-http://localhost:3001
+http://localhost:3001/order
 ```
 
 For development:
@@ -25,12 +26,30 @@ For development:
 npm run dev
 ```
 
+## Base Paths
+
+The service base path is configured with `ORDER_BASE_PATH`.
+
+```env
+ORDER_BASE_PATH=/order
+```
+
+Inventory is configured as the full service base URL:
+
+```env
+INVENTORY_SERVICE_URL=http://localhost:3002/inventory
+```
+
 ## Endpoints
 
 ```text
-GET  /health
-GET  /api/orders
-POST /api/orders
+GET  /order/health
+GET  /order/products
+POST /order/products
+PUT  /order/products/:id
+DELETE /order/products/:id
+GET  /order/orders
+POST /order/orders
 ```
 
 ## Inventory Service
@@ -38,13 +57,13 @@ POST /api/orders
 For local runs:
 
 ```bash
-INVENTORY_SERVICE_URL=http://localhost:3002 npm start
+INVENTORY_SERVICE_URL=http://localhost:3002/inventory npm start
 ```
 
 For Docker Compose, use Docker's internal service name:
 
 ```text
-INVENTORY_SERVICE_URL=http://inventory-service:3002
+INVENTORY_SERVICE_URL=http://inventory-service:3002/inventory
 ```
 
 ## Docker
@@ -59,7 +78,8 @@ Run:
 
 ```bash
 docker run --rm -p 3001:3001 \
-  -e INVENTORY_SERVICE_URL=http://host.docker.internal:3002 \
+  -e ORDER_BASE_PATH=/order \
+  -e INVENTORY_SERVICE_URL=http://host.docker.internal:3002/inventory \
   order-service:latest
 ```
 
